@@ -1,7 +1,7 @@
 #include<iostream>
 #include<string>
 #include<fstream>
-std::string prazni_mesta(int n) {
+std::string space(int n) {
 	std::string rez;
 	for (int i = 0; i < n; i++) {
 		rez += " ";
@@ -9,34 +9,36 @@ std::string prazni_mesta(int n) {
 	return rez;
 }
 int main() {
-	std::ofstream barkod_paste("barkod_paste.txt");
-	std::ifstream slika("barkod.ppm");
-	std::string pikseli;
-	std::getline(slika, pikseli); //se ignorira
+	std::string path;
+	std::cout << "Enter the path of the pixmap (.PPM): ";
+	std::cin >> path;
+	std::ifstream pixmap(path);
+	std::string data;
+	std::getline(pixmap, data);
 	unsigned x;
-	slika >> x;
-	std::getline(slika, pikseli); //se ignorira
-	std::getline(slika, pikseli); //se ignorira
-	std::getline(slika, pikseli);
-	int broj_b = 0;
-	int broj_w = 0;
+	pixmap >> x;
+	std::getline(pixmap, data); std::getline(pixmap, data); //ignored
+	std::getline(pixmap, data);
+	int num_b = 0;
+	int num_w = 0;
+	std::ofstream barcode_paste("barcode_paste.txt");
 	for (int i = 0; i < x; ++i) {
-		if ((unsigned)pikseli[3*i] != 0) {
-			++broj_w;
-			if (broj_b != 0) {
-				barkod_paste << "||" << prazni_mesta(broj_b/2) << "||";
-				broj_b = 0;
+		if ((unsigned)data[3*i] != 0) {
+			++num_w;
+			if (num_b != 0) {
+				barcode_paste << "||" << space(num_b/2) << "||";
+				num_b = 0;
 			}
 		}
 		else {
-			++broj_b;
-			if (broj_w != 0) {
-				barkod_paste << prazni_mesta(broj_w/2);
-				broj_w = 0;
+			++num_b;
+			if (num_w != 0) {
+				barcode_paste << space(num_w/2);
+				num_w = 0;
 			}
 		}
 	}
-	if (broj_b != 0) {
-		barkod_paste << "||" << prazni_mesta(broj_b / 2) << "||";
+	if (num_b != 0) {
+		barcode_paste << "||" << space(num_b / 2) << "||";
 	}
 }
